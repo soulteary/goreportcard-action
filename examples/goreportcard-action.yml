@@ -27,7 +27,7 @@ jobs:
         uses: soulteary/goreportcard-action@v1
         with:
           directory: "."
-          output: "goreportcard.svg"
+          output: ".github/goreportcard.svg"
           report: "true"
           report_output: ".github/goreportcard-report.md"
           # Fail the workflow when the score drops below this percentage.

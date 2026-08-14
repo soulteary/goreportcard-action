@@ -23,7 +23,7 @@ jobs:
         uses: ./
         with:
           directory: "."
-          output: "goreportcard.svg"
+          output: ".github/goreportcard.svg"
           report: "true"
           commit: "true"
           version: "source"

@@ -1,6 +1,6 @@
 # Go Report Card
 
-[![Go Report Card](./goreportcard.svg)](./.github/goreportcard-report.md)
+[![Go Report Card](./.github/goreportcard.svg)](./.github/goreportcard-report.md)
 [![Go](https://github.com/soulteary/private-action-goreportcard/actions/workflows/go.yml/badge.svg)](https://github.com/soulteary/private-action-goreportcard/actions/workflows/go.yml)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSE)
 
@@ -74,7 +74,7 @@ goreportcard-cli -v
 Generate a self-contained SVG badge (no external service required):
 
 ```sh
-goreportcard-cli -svg goreportcard.svg
+goreportcard-cli -svg .github/goreportcard.svg
 ```
 
 Generate a Markdown quality report:
@@ -107,7 +107,7 @@ goreportcard-cli -t 90
 goreportcard-cli -j | jq '.GradeFromPercentage, .average'
 
 # Produce the badge and the Markdown report in one run.
-goreportcard-cli -svg goreportcard.svg -report goreportcard-report.md
+goreportcard-cli -svg .github/goreportcard.svg -report .github/goreportcard-report.md
 ```
 
 ## GitHub Action
@@ -139,7 +139,7 @@ jobs:
         uses: soulteary/goreportcard-action@v1
         with:
           directory: "."
-          output: "goreportcard.svg"
+          output: ".github/goreportcard.svg"
           commit: "true"
       - run: echo "Grade ${{ steps.grc.outputs.grade }} (${{ steps.grc.outputs.score }}%)"
 ```
@@ -147,7 +147,7 @@ jobs:
 Then reference the committed badge from your README:
 
 ```markdown
-![Go Report Card](./goreportcard.svg)
+![Go Report Card](./.github/goreportcard.svg)
 ```
 
 ### Inputs
@@ -155,7 +155,7 @@ Then reference the committed badge from your README:
 | Input               | Default                                          | Description                                                                    |
 | ------------------- | ------------------------------------------------ | ------------------------------------------------------------------------------ |
 | `directory`         | `.`                                              | Root directory of the Go project to grade.                                     |
-| `output`            | `goreportcard.svg`                               | Path (relative to the repo) where the badge is written.                        |
+| `output`            | `.github/goreportcard.svg`                       | Path (relative to the repo) where the badge is written.                        |
 | `report`            | `true`                                           | Whether to also generate a Markdown quality report.                            |
 | `report_output`     | `.github/goreportcard-report.md`                 | Path (relative to the repo) where the Markdown report is written.              |
 | `threshold`         | `0`                                              | Minimum score percentage (0-100). The action fails below it (after the badge/report are committed). `0` never fails. |

@@ -13,7 +13,7 @@ inputs:
   output:
     description: "Path (relative to the repository) where the SVG badge will be written."
     required: false
-    default: "goreportcard.svg"
+    default: ".github/goreportcard.svg"
   report:
     description: "Whether to also generate a Markdown quality report."
     required: false

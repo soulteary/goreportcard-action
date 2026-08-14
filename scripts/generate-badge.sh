@@ -7,7 +7,7 @@
 set -euo pipefail
 
 DIRECTORY="${INPUT_DIRECTORY:-.}"
-OUTPUT="${INPUT_OUTPUT:-goreportcard.svg}"
+OUTPUT="${INPUT_OUTPUT:-.github/goreportcard.svg}"
 THRESHOLD="${INPUT_THRESHOLD:-0}"
 REPORT="${INPUT_REPORT:-true}"
 REPORT_OUTPUT="${INPUT_REPORT_OUTPUT:-.github/goreportcard-report.md}"

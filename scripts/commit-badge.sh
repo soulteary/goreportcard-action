@@ -6,7 +6,7 @@
 
 set -euo pipefail
 
-OUTPUT="${INPUT_OUTPUT:-goreportcard.svg}"
+OUTPUT="${INPUT_OUTPUT:-.github/goreportcard.svg}"
 REPORT="${INPUT_REPORT:-true}"
 REPORT_OUTPUT="${INPUT_REPORT_OUTPUT:-.github/goreportcard-report.md}"
 COMMIT_MESSAGE="${INPUT_COMMIT_MESSAGE:-chore: update Go Report Card badge [skip ci]}"

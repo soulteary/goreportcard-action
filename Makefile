@@ -18,7 +18,7 @@ test:
 	go test -cover ./...
 
 badge: install
-	go run ./cmd/goreportcard-cli -svg goreportcard.svg
+	go run ./cmd/goreportcard-cli -svg .github/goreportcard.svg
 
 misspell:
 	@[ -x "$(shell which misspell)" ] || go install github.com/client9/misspell/cmd/misspell
