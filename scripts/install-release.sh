@@ -16,7 +16,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 VERSION="${INPUT_VERSION:-latest}"
-REPO="${GOREPORTCARD_REPO:-gojp/goreportcard}"
+REPO="${GOREPORTCARD_REPO:-soulteary/goreportcard-action}"
 BIN_DIR="${RUNNER_TEMP:-/tmp}/goreportcard-bin"
 
 log() { echo "[goreportcard] $*"; }

@@ -24,7 +24,7 @@ jobs:
 
       - name: Generate Go Report Card badge and report
         id: grc
-        uses: gojp/goreportcard@v1
+        uses: soulteary/goreportcard-action@v1
         with:
           directory: "."
           output: "goreportcard.svg"

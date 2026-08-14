@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/gojp/goreportcard/check"
+	"github.com/soulteary/goreportcard-action/check"
 )
 
 var (

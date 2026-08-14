@@ -1,4 +1,4 @@
-module github.com/gojp/goreportcard
+module github.com/soulteary/goreportcard-action
 
 go 1.26.6
 

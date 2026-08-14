@@ -16,8 +16,8 @@ This project ships two things:
 ## Command line interface
 
 ```sh
-git clone https://github.com/gojp/goreportcard.git
-cd goreportcard
+git clone https://github.com/soulteary/goreportcard-action.git
+cd goreportcard-action
 make install
 go install ./cmd/goreportcard-cli
 goreportcard-cli
@@ -90,7 +90,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: grc
-        uses: gojp/goreportcard@v1
+        uses: soulteary/goreportcard-action@v1
         with:
           directory: "."
           output: "goreportcard.svg"
