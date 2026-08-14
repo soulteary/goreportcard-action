@@ -1,5 +1,7 @@
 # Go Report Card
 
+[![Go Report Card](./goreportcard.svg)](./.github/goreportcard-report.md)
+[![Go](https://github.com/soulteary/private-action-goreportcard/actions/workflows/go.yml/badge.svg)](https://github.com/soulteary/private-action-goreportcard/actions/workflows/go.yml)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSE)
 
 Generate a quality report card for a Go project and turn it into a
@@ -161,7 +163,6 @@ Then reference the committed badge from your README:
 | `commit_message`    | `chore: update Go Report Card badge [skip ci]`   | Commit message used when committing the badge.                                 |
 | `commit_user_name`  | `github-actions[bot]`                            | Git `user.name` used for the commit.                                           |
 | `commit_user_email` | `github-actions[bot]@users.noreply.github.com`   | Git `user.email` used for the commit.                                          |
-| `go_version`        | `1.26.x`                                          | Go version to set up (used for the source-build fallback).                     |
 | `version`           | `latest`                                          | Release tag of the pre-built binaries to download (e.g. `v1.2.3`), `latest`, or `source` to compile from the module sources. |
 
 By default the action downloads pre-built binaries (the CLI plus the linter

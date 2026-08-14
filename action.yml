@@ -42,10 +42,6 @@ inputs:
     description: "Git user.email used for the commit."
     required: false
     default: "github-actions[bot]@users.noreply.github.com"
-  go_version:
-    description: "Go version to set up for running the checks."
-    required: false
-    default: "1.26.x"
   version:
     description: "Release tag of the pre-built binaries to download (e.g. v1.2.3), 'latest', or 'source' to compile from the module sources."
     required: false
@@ -71,7 +67,7 @@ runs:
     - name: Set up Go
       uses: actions/setup-go@v5
       with:
-        go-version: ${{ inputs.go_version }}
+        go-version-file: ${{ github.action_path }}/go.mod
         cache-dependency-path: ${{ github.action_path }}/go.sum
 
     - name: Install goreportcard-cli and its linters
