@@ -1,5 +1,5 @@
 name: "Go Report Card Badge"
-description: "Grade a Go project with Go Report Card and generate a self-contained SVG badge, optionally committing it back to the repository."
+description: "Grade a Go project with Go Report Card, generate a self-contained SVG badge, and optionally commit it back to the repo."
 author: "goreportcard"
 branding:
   icon: "award"

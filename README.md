@@ -37,7 +37,7 @@ Or add it to CI as a GitHub Action that grades your repo and commits a badge:
 - uses: soulteary/goreportcard-action@v1
   with:
     directory: "."
-    output: "goreportcard.svg"
+    output: ".github/goreportcard.svg"
     commit: "true"
 ```
 
