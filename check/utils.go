@@ -332,26 +332,16 @@ outer:
 	return fsMap, nil
 }
 
-// GoTool runs a given go command (for example gofmt, go tool vet)
-// on a directory
-func GoTool(dir string, filenames, command []string) (float64, []FileSummary, error) {
-	var enabledCheck = command[0]
+// enabledCheckName returns the name of the check that a command enables.
+func enabledCheckName(command []string) string {
 	if command[0] == "gometalinter" {
-		enabledCheck = command[len(command)-1]
+		return command[len(command)-1]
 	}
+	return command[0]
+}
 
-	// temporary disabling of misspell as it's the slowest
-	// command right now
-	if strings.Contains(enabledCheck, "misspell") && len(filenames) > 300 {
-		log.Println("disabling misspell on large repo...")
-		return 1, []FileSummary{}, nil
-	}
-
-	if strings.Contains(enabledCheck, "ineffassign") && len(filenames) > 100 {
-		log.Println("disabling ineffassign on large repo...")
-		return 1, []FileSummary{}, nil
-	}
-
+// buildToolParams builds the argument list for the given command and target dir.
+func buildToolParams(dir, enabledCheck string, command []string) []string {
 	params := command[1:]
 
 	if command[0] == "gometalinter" {
@@ -367,6 +357,11 @@ func GoTool(dir string, filenames, command []string) (float64, []FileSummary, er
 		params = append(params, dir+"/...")
 	}
 
+	return params
+}
+
+// runTool executes the command and returns the failing file summaries.
+func runTool(dir, enabledCheck string, command, params []string) ([]FileSummary, error) {
 	cmd := exec.Command(command[0], params...)
 
 	if strings.Contains(enabledCheck, "staticcheck") {
@@ -375,12 +370,11 @@ func GoTool(dir string, filenames, command []string) (float64, []FileSummary, er
 
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		return 0, []FileSummary{}, err
+		return []FileSummary{}, err
 	}
 
-	err = cmd.Start()
-	if err != nil {
-		return 0, []FileSummary{}, err
+	if err := cmd.Start(); err != nil {
+		return []FileSummary{}, err
 	}
 
 	out := bufio.NewScanner(stdout)
@@ -388,38 +382,54 @@ func GoTool(dir string, filenames, command []string) (float64, []FileSummary, er
 	// the same file can appear multiple times out of order
 	// in the output, so we can't go line by line, have to store
 	// a map of filename to FileSummary
-	var failed = []FileSummary{}
-
 	fsMap, err := getFileSummaryMap(out, dir)
 	if err != nil {
-		return 0, []FileSummary{}, err
+		return []FileSummary{}, err
 	}
 
 	if err := out.Err(); err != nil {
-		return 0, []FileSummary{}, err
+		return []FileSummary{}, err
 	}
 
+	var failed = []FileSummary{}
 	for _, v := range fsMap {
 		failed = append(failed, v)
 	}
 
-	err = cmd.Wait()
-	if exitErr, ok := err.(*exec.ExitError); ok {
-		// The program has exited with an exit code != 0
-
-		if status, ok := exitErr.Sys().(syscall.WaitStatus); ok {
-			// some commands exit 1 when files fail to pass (for example go vet)
-			if status.ExitStatus() != 1 {
-				return 0, failed, err
-				// return 0, Error{}, err
-			}
-		}
+	if err := waitToolCmd(cmd); err != nil {
+		return failed, err
 	}
 
+	return failed, nil
+}
+
+// waitToolCmd waits for the command to finish, tolerating an exit status of 1
+// which some tools (for example go vet) use to signal that files failed checks.
+func waitToolCmd(cmd *exec.Cmd) error {
+	err := cmd.Wait()
+	exitErr, ok := err.(*exec.ExitError)
+	if !ok {
+		return nil
+	}
+
+	status, ok := exitErr.Sys().(syscall.WaitStatus)
+	if !ok {
+		return err
+	}
+
+	if status.ExitStatus() != 1 {
+		return err
+	}
+
+	return nil
+}
+
+// toolScore computes the passing score given the checked filenames and failures.
+func toolScore(filenames []string, failed []FileSummary) (float64, error) {
 	if len(filenames) == 1 {
 		lc, err := lineCount(filenames[0])
 		if err != nil {
-			return 0, failed, err
+			return 0, err
 		}
 
 		var errors int
@@ -427,8 +437,40 @@ func GoTool(dir string, filenames, command []string) (float64, []FileSummary, er
 			errors = len(failed[0].Errors)
 		}
 
-		return float64(lc-errors) / float64(lc), failed, nil
+		return float64(lc-errors) / float64(lc), nil
 	}
 
-	return float64(len(filenames)-len(failed)) / float64(len(filenames)), failed, nil
+	return float64(len(filenames)-len(failed)) / float64(len(filenames)), nil
+}
+
+// GoTool runs a given go command (for example gofmt, go tool vet)
+// on a directory
+func GoTool(dir string, filenames, command []string) (float64, []FileSummary, error) {
+	enabledCheck := enabledCheckName(command)
+
+	// temporary disabling of misspell as it's the slowest
+	// command right now
+	if strings.Contains(enabledCheck, "misspell") && len(filenames) > 300 {
+		log.Println("disabling misspell on large repo...")
+		return 1, []FileSummary{}, nil
+	}
+
+	if strings.Contains(enabledCheck, "ineffassign") && len(filenames) > 100 {
+		log.Println("disabling ineffassign on large repo...")
+		return 1, []FileSummary{}, nil
+	}
+
+	params := buildToolParams(dir, enabledCheck, command)
+
+	failed, err := runTool(dir, enabledCheck, command, params)
+	if err != nil {
+		return 0, failed, err
+	}
+
+	score, err := toolScore(filenames, failed)
+	if err != nil {
+		return 0, failed, err
+	}
+
+	return score, failed, nil
 }
