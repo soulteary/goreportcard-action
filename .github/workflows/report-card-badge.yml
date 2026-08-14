@@ -1,0 +1,37 @@
+# Self-hosted usage: this repository grades itself with its own action and
+# commits the resulting badge back to the repo.
+
+name: Report Card Badge
+
+on:
+  push:
+    branches: [master, main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  badge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Generate badge
+        id: grc
+        uses: ./
+        with:
+          directory: "."
+          output: "goreportcard.svg"
+          report: "true"
+          commit: "true"
+          version: "source"
+
+      - name: Summary
+        run: |
+          {
+            echo "Grade ${{ steps.grc.outputs.grade }} (${{ steps.grc.outputs.score }}%)"
+            echo "Badge: ${{ steps.grc.outputs.badge }}"
+            echo "Report: ${{ steps.grc.outputs.report }}"
+          } >> "$GITHUB_STEP_SUMMARY"

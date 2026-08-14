@@ -1,0 +1,43 @@
+# Example workflow for consumers of the goreportcard action.
+#
+# Copy this file into your own repository at .github/workflows/goreportcard.yml
+# It grades the project, generates a self-contained SVG badge and a Markdown
+# report, and commits them back to the repository whenever code on the default
+# branch changes.
+
+name: Go Report Card
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  report-card:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Generate Go Report Card badge and report
+        id: grc
+        uses: gojp/goreportcard@v1
+        with:
+          directory: "."
+          output: "goreportcard.svg"
+          report: "true"
+          report_output: ".github/goreportcard-report.md"
+          # Fail the workflow when the score drops below this percentage.
+          # Use "0" to never fail. The badge/report are still committed first.
+          threshold: "0"
+          commit: "true"
+          commit_message: "chore: update Go Report Card badge [skip ci]"
+
+      - name: Show result
+        run: |
+          echo "Grade ${{ steps.grc.outputs.grade }} (${{ steps.grc.outputs.score }}%)"
+          echo "Badge:  ${{ steps.grc.outputs.badge }}"
+          echo "Report: ${{ steps.grc.outputs.report }}"
