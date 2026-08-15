@@ -1,6 +1,7 @@
 # Go Report Card
 
 [![Go Report Card](./.github/goreportcard.svg)](./.github/goreportcard-report.md)
+[![GitHub Marketplace](https://img.shields.io/badge/Marketplace-Go%20Report%20Card%20Badge-2ea44f?logo=github)](https://github.com/marketplace/actions/go-report-card-badge)
 [![Go](https://github.com/soulteary/private-action-goreportcard/actions/workflows/go.yml/badge.svg)](https://github.com/soulteary/private-action-goreportcard/actions/workflows/go.yml)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSE)
 
@@ -11,13 +12,27 @@ overall grade (from `A+` down to `F`).
 
 This project ships two things:
 
-- a **command line tool** (`goreportcard-cli`) for grading a project locally, and
-- a **GitHub Action** that grades a repository, renders an SVG badge, and can
-  commit the badge back into the repository.
+- a **GitHub Action**
+  ([available on the GitHub Marketplace](https://github.com/marketplace/actions/go-report-card-badge))
+  that grades a repository, renders an SVG badge, and can commit the badge back
+  into the repository, and
+- a **command line tool** (`goreportcard-cli`) for grading a project locally.
 
 ## Quick start
 
-Grade a project on your machine:
+The fastest way to get started is with the GitHub Action, available on the
+[GitHub Marketplace](https://github.com/marketplace/actions/go-report-card-badge).
+It grades your repo, renders a self-contained SVG badge and commits it back:
+
+```yaml
+- uses: soulteary/goreportcard-action@v1
+  with:
+    directory: "."
+    output: ".github/goreportcard.svg"
+    commit: "true"
+```
+
+Prefer grading a project on your machine? Use the CLI instead:
 
 ```sh
 # Install the CLI.
@@ -31,88 +46,13 @@ goreportcard-cli
 > install those alongside the CLI in one step, clone the repo and run
 > `make install` (see [Command line interface](#command-line-interface) below).
 
-Or add it to CI as a GitHub Action that grades your repo and commits a badge:
-
-```yaml
-- uses: soulteary/goreportcard-action@v1
-  with:
-    directory: "."
-    output: ".github/goreportcard.svg"
-    commit: "true"
-```
-
 The sections below cover each entry point in detail.
-
-## Command line interface
-
-```sh
-git clone https://github.com/soulteary/goreportcard-action.git
-cd goreportcard-action
-make install
-go install ./cmd/goreportcard-cli
-goreportcard-cli
-```
-
-```
-Grade ........... A+ 96.5%
-Files ............... 42
-Issues ............... 1
-gofmt .............. 100%
-go_vet ............. 100%
-gocyclo ............ 100%
-ineffassign ........ 100%
-license ............ 100%
-misspell ........... 100%
-```
-
-Verbose output lists the offending files:
-
-```sh
-goreportcard-cli -v
-```
-
-Generate a self-contained SVG badge (no external service required):
-
-```sh
-goreportcard-cli -svg .github/goreportcard.svg
-```
-
-Generate a Markdown quality report:
-
-```sh
-goreportcard-cli -report goreportcard-report.md
-```
-
-Useful flags:
-
-| Flag     | Description                                                            |
-| -------- | --------------------------------------------------------------------- |
-| `-d`     | Root directory of the Go project (default `.`).                       |
-| `-v`     | Verbose output.                                                       |
-| `-j`     | JSON output (always exits 0).                                         |
-| `-t`     | Failure threshold as a score percentage; exits non-zero when below.   |
-| `-svg`   | Write a self-contained badge SVG to the given path.                   |
-| `-report`| Write a Markdown quality report to the given path.                    |
-
-Common recipes:
-
-```sh
-# Grade a project in another directory.
-goreportcard-cli -d ./path/to/project
-
-# Fail (exit code 1) when the score drops below 90% — useful as a CI gate.
-goreportcard-cli -t 90
-
-# Emit machine-readable JSON (always exits 0) for scripting or dashboards.
-goreportcard-cli -j | jq '.GradeFromPercentage, .average'
-
-# Produce the badge and the Markdown report in one run.
-goreportcard-cli -svg .github/goreportcard.svg -report .github/goreportcard-report.md
-```
 
 ## GitHub Action
 
-The repository is itself a GitHub Action. It grades a Go project, generates a
+The repository is itself a GitHub Action, published on the
+[GitHub Marketplace](https://github.com/marketplace/actions/go-report-card-badge).
+It grades a Go project, generates a
 self-contained SVG badge (no dependency on `shields.io`), writes a Markdown
 quality report, and can commit both back into your repository.
 
@@ -181,6 +121,73 @@ compile.
 | `report`| The path to the generated Markdown report (empty when disabled). |
 
 A ready-to-copy example lives in [`examples/goreportcard-action.yml`](examples/goreportcard-action.yml).
+
+## Command line interface
+
+```sh
+git clone https://github.com/soulteary/goreportcard-action.git
+cd goreportcard-action
+make install
+go install ./cmd/goreportcard-cli
+goreportcard-cli
+```
+
+```
+Grade ........... A+ 96.5%
+Files ............... 42
+Issues ............... 1
+gofmt .............. 100%
+go_vet ............. 100%
+gocyclo ............ 100%
+ineffassign ........ 100%
+license ............ 100%
+misspell ........... 100%
+```
+
+Verbose output lists the offending files:
+
+```sh
+goreportcard-cli -v
+```
+
+Generate a self-contained SVG badge (no external service required):
+
+```sh
+goreportcard-cli -svg .github/goreportcard.svg
+```
+
+Generate a Markdown quality report:
+
+```sh
+goreportcard-cli -report goreportcard-report.md
+```
+
+Useful flags:
+
+| Flag     | Description                                                            |
+| -------- | --------------------------------------------------------------------- |
+| `-d`     | Root directory of the Go project (default `.`).                       |
+| `-v`     | Verbose output.                                                       |
+| `-j`     | JSON output (always exits 0).                                         |
+| `-t`     | Failure threshold as a score percentage; exits non-zero when below.   |
+| `-svg`   | Write a self-contained badge SVG to the given path.                   |
+| `-report`| Write a Markdown quality report to the given path.                    |
+
+Common recipes:
+
+```sh
+# Grade a project in another directory.
+goreportcard-cli -d ./path/to/project
+
+# Fail (exit code 1) when the score drops below 90% — useful as a CI gate.
+goreportcard-cli -t 90
+
+# Emit machine-readable JSON (always exits 0) for scripting or dashboards.
+goreportcard-cli -j | jq '.GradeFromPercentage, .average'
+
+# Produce the badge and the Markdown report in one run.
+goreportcard-cli -svg .github/goreportcard.svg -report .github/goreportcard-report.md
+```
 
 ## Releasing (maintainers)
 
