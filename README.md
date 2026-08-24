@@ -2,7 +2,9 @@
 
 [![Go Report Card](./.github/goreportcard.svg)](./.github/goreportcard-report.md)
 [![GitHub Marketplace](https://img.shields.io/badge/Marketplace-Go%20Report%20Card%20Badge-2ea44f?logo=github)](https://github.com/marketplace/actions/go-report-card-badge)
-[![Go](https://github.com/soulteary/private-action-goreportcard/actions/workflows/go.yml/badge.svg)](https://github.com/soulteary/private-action-goreportcard/actions/workflows/go.yml)
+[![CI](https://github.com/soulteary/goreportcard-action/actions/workflows/ci.yml/badge.svg)](https://github.com/soulteary/goreportcard-action/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/soulteary/goreportcard-action/actions/workflows/codeql.yml/badge.svg)](https://github.com/soulteary/goreportcard-action/actions/workflows/codeql.yml)
+[![Release](https://img.shields.io/github/v/release/soulteary/goreportcard-action?sort=semver)](https://github.com/soulteary/goreportcard-action/releases)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSE)
 
 Generate a quality report card for a Go project and turn it into a
