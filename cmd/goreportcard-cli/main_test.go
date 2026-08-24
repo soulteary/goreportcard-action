@@ -15,7 +15,7 @@ import (
 func sampleRepo(t *testing.T) string {
 	t.Helper()
 	dir := t.TempDir()
-	src := "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// obivous typo\n\tfmt.Println(\"invalid %s\")\n}\n"
+	src := "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// obvious typo\n\tfmt.Println(\"invalid %s\")\n}\n"
 	if err := os.WriteFile(filepath.Join(dir, "a.go"), []byte(src), 0o644); err != nil {
 		t.Fatalf("writing sample repo: %v", err)
 	}
