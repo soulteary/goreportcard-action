@@ -26,7 +26,7 @@ func TestGradeFromPercentage(t *testing.T) {
 		{0, GradeF},
 	}
 	for _, tt := range cases {
-		if got := GradeFromPercentage(tt.pct); got != Grade(tt.want) {
+		if got := GradeFromPercentage(tt.pct); got != tt.want {
 			t.Errorf("GradeFromPercentage(%v) = %q, want %q", tt.pct, got, tt.want)
 		}
 	}
