@@ -16,9 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Coverage collection with a project gate (`>= 70%`) and a patch-coverage gate
   (`scripts/check-patch-coverage.sh`, new lines `>= 90%`) wired into CI on pull
   requests, with a `--selftest` mode CI verifies.
-- Supply-chain hardening: a `govulncheck` CI job, a CodeQL analysis workflow, and
-  release-time cosign keyless signing, a CycloneDX SBOM, and SLSA build
-  provenance attestations for every archive and `checksums.txt`.
+- Supply-chain hardening: a `govulncheck` CI job, release-time cosign keyless
+  signing, a CycloneDX SBOM, and SLSA build provenance attestations for every
+  archive and `checksums.txt`.
 - Grouped Dependabot updates for `gomod` and `github-actions`.
 - Community files: `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`,
   `CODEOWNERS`, `.editorconfig`, and issue/PR templates.
