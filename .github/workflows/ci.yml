@@ -41,6 +41,14 @@ jobs:
           go-version-file: go.mod
           cache-dependency-path: go.sum
 
+      - name: Install report-card tools
+        shell: bash
+        run: |
+          go install github.com/client9/misspell/cmd/misspell@latest
+          go install github.com/fzipp/gocyclo/cmd/gocyclo@latest
+          go install github.com/gordonklaus/ineffassign@latest
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+
       - name: Verify formatting
         if: runner.os != 'Windows'
         shell: bash
@@ -97,6 +105,14 @@ jobs:
         with:
           go-version-file: go.mod
           cache-dependency-path: go.sum
+
+      - name: Install report-card tools
+        shell: bash
+        run: |
+          go install github.com/client9/misspell/cmd/misspell@latest
+          go install github.com/fzipp/gocyclo/cmd/gocyclo@latest
+          go install github.com/gordonklaus/ineffassign@latest
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
 
       - name: Self-test the patch-coverage script
         shell: bash
