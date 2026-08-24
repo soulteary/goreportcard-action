@@ -9,6 +9,10 @@ _test
 _testmain.go
 *.test
 *.prof
+coverage.out
+
+# Linter cache
+/.golangci-cache
 
 *.exe
 *.swp

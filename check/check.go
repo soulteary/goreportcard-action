@@ -53,7 +53,9 @@ func Run(dir string, cli bool) (ChecksResult, error) {
 	}
 
 	if cli {
-		defer RevertFiles(skipped)
+		// Best-effort restore of renamed files; a failed revert only affects
+		// local scratch copies, so the return value is intentionally ignored.
+		defer RevertFiles(skipped) //nolint:errcheck // best-effort cleanup
 	}
 
 	checks := []Check{

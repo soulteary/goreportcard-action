@@ -1,0 +1,69 @@
+# golangci-lint v2 config. Linters are an explicit allow-list (default set is
+# disabled) so enabling a new check is always a deliberate, reviewed change.
+# The runner version is pinned in .github/workflows/ci.yml.
+version: "2"
+
+run:
+  timeout: 5m
+
+linters:
+  default: none
+  enable:
+    # Correctness
+    - errcheck
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    # Security
+    - gosec
+    # Style / maintainability
+    - misspell
+    - unconvert
+    - nolintlint
+
+  settings:
+    errcheck:
+      # Diagnostic writes and best-effort Close/Revert on deferred cleanup are
+      # intentionally unchecked throughout this CLI.
+      exclude-functions:
+        - fmt.Print
+        - fmt.Printf
+        - fmt.Println
+        - fmt.Fprint
+        - fmt.Fprintf
+        - fmt.Fprintln
+        - (io.Closer).Close
+        - (*os.File).Close
+    gosec:
+      excludes:
+        # G204: this tool's purpose is running external linters (gocyclo,
+        # misspell, ...) with computed, non-shell-evaluated arguments.
+        - G204
+        # G301/G304/G306: generated badge/report files and their parent dirs
+        # are meant to be committed and read by other tools, so world-readable
+        # 0644/0755 and CLI-flag-provided paths are intentional.
+        - G301
+        - G304
+        - G306
+    nolintlint:
+      require-explanation: true
+      require-specific: true
+      allow-unused: false
+
+  exclusions:
+    rules:
+      - path: _test\.go
+        linters:
+          - errcheck
+          - gosec
+      - path: check/testdata/
+        linters:
+          - errcheck
+          - gosec
+          - staticcheck
+          - unused
+
+formatters:
+  enable:
+    - gofmt
