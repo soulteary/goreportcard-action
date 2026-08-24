@@ -1,0 +1,43 @@
+name: Bug report
+description: Report a problem with the action or CLI
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear description of the bug and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Include your workflow snippet or the exact `goreportcard-cli` command.
+      render: yaml
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Action / CLI version
+      placeholder: "e.g. v1.0.0 or a commit SHA"
+    validations:
+      required: true
+  - type: dropdown
+    id: runner
+    attributes:
+      label: Runner OS
+      options:
+        - ubuntu-latest
+        - macos-latest
+        - windows-latest
+        - other / self-hosted
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Paste the job log or CLI output (redact secrets).
+      render: shell
