@@ -201,6 +201,9 @@ func goPkgInToGitHub(name string) string {
 			dir = "/" + strings.Join(parts[2:], "/")
 		}
 	} else {
+		if len(parts) < 3 {
+			return ""
+		}
 		user = parts[1]
 		pkgversion = parts[2]
 		if len(parts) > 3 {
