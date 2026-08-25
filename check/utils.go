@@ -22,6 +22,10 @@ var (
 // in a given directory.
 func GoFiles(dir string) (filenames, skipped []string, err error) {
 	visit := func(fp string, fi os.FileInfo, err error) error {
+		// filepath.Walk uses the OS-native separator (backslash on Windows),
+		// but the rest of the pipeline (skip checks, display names, file URLs)
+		// assumes forward slashes, so normalize early.
+		fp = filepath.ToSlash(fp)
 		for _, skip := range skipDirs {
 			if strings.Contains(fp, fmt.Sprintf("/%s/", skip)) {
 				return nil
@@ -170,7 +174,7 @@ func displayFilename(filename string) string {
 
 	fsp := strings.Split(sp[1], "/")
 
-	return filepath.Join(fsp[1:]...)
+	return strings.Join(fsp[1:], "/")
 }
 
 // borrowed from github.com/client9/gosupplychain
@@ -305,6 +309,12 @@ func normalizeToolLine(line, enabledCheck string) (normalized, filename string, 
 		return "", "", false
 	}
 
+	// Native tools emit OS-native separators (backslash on Windows), but the
+	// rest of the pipeline (skip checks, display names, file URLs) assumes
+	// forward slashes. Normalize here so parsing is platform-independent.
+	line = strings.ReplaceAll(line, "\\", "/")
+	line = strings.TrimPrefix(line, "./")
+
 	switch {
 	case strings.Contains(enabledCheck, "gofmt"):
 		// gofmt only lists offending files; synthesise a position so the rest
@@ -348,8 +358,10 @@ outer:
 			continue
 		}
 
+		// normalizeToolLine already converted separators to forward slashes,
+		// so filename uses "/" regardless of the host OS.
 		if dir != "" && !strings.Contains(filename, dir) {
-			filename = filepath.Join(dir, filename)
+			filename = strings.TrimSuffix(dir, "/") + "/" + filename
 		}
 
 		for _, skip := range skipSuffixes {
