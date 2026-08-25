@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-08-25
+
 ### Added
 - `.golangci.yml` lint config (explicit allow-list) and a `golangci-lint` job in
   CI, pinned to a specific runner version.
@@ -31,10 +33,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactored the CLI so its pipeline is a testable `run(options, io.Writer)`.
 
 ### Fixed
+- Replaced the deprecated `gometalinter` driver with native Go tooling
+  (`gofmt`, `go vet`, `gocyclo`, `ineffassign`, `misspell`) so grading works on
+  modern toolchains.
+- Normalized path separators so grading and file URLs work correctly on
+  Windows.
+- Guarded against out-of-range parts in `goPkgInToGitHub` to avoid a panic on
+  malformed `gopkg.in` import paths.
 - Corrected README badge links that mixed the old
   `private-action-goreportcard` slug with `goreportcard-action`.
 - Replaced non-existent `actions/checkout@v7` / `actions/setup-go@v7` references
   that would have failed CI.
 - Cleaned up stale `.github/FUNDING.yml` placeholder entries.
 
-[Unreleased]: https://github.com/soulteary/goreportcard-action/commits/main
+[Unreleased]: https://github.com/soulteary/goreportcard-action/compare/v1.1.0...main
+[1.1.0]: https://github.com/soulteary/goreportcard-action/compare/v1.0.0...v1.1.0

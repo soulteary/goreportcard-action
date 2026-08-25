@@ -207,6 +207,14 @@ You can reproduce the artifacts locally with:
 scripts/build-release.sh v1.2.3   # writes archives to ./dist
 ```
 
+After the release is published, move the floating major-version tag (`v1`) to
+the new commit so consumers pinned to `@v1` pick up the update:
+
+```sh
+git tag -f v1 v1.2.3
+git push -f origin v1
+```
+
 ## Contributing
 
 Contributions are welcome! Feel free to raise an issue or submit a pull request.
