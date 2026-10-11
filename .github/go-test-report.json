@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "tests": {
+    "total": 20,
+    "passed": 20,
+    "failed": 0,
+    "skipped": 0
+  },
+  "coverage": {
+    "covered_statements": 344,
+    "total_statements": 462,
+    "percentage": 74.46,
+    "threshold": 70
+  },
+  "packages": [
+    {
+      "name": "check",
+      "status": "pass",
+      "tests": 14,
+      "failed": 0,
+      "coverage": 75.78
+    },
+    {
+      "name": "cmd/goreportcard-cli",
+      "status": "pass",
+      "tests": 6,
+      "failed": 0,
+      "coverage": 62.22
+    }
+  ],
+  "failures": null
+}
