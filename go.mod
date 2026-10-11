@@ -1,6 +1,6 @@
 module github.com/soulteary/goreportcard-action
 
-go 1.26.6
+go 1.27.2
 
 require (
 	github.com/alecthomas/gometalinter v1.0.3 // indirect
