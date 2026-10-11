@@ -23,3 +23,5 @@ Raw profiles/test logs are artifacts, never committed.
 Local `uses: ./` smoke tests intentionally exercise the Action under development;
 they are development tests rather than floating production Action references.
 Patch coverage reuses the Linux test artifact and retains its 90% changed-line gate.
+
+Published releases with a CI skip annotation use the release-event fallback. Ordinary releases use the tag-push report run; the release gate skips duplicate tests. Stable artifacts containing only reports under `.github` are downloaded into that directory explicitly; mixed report/document artifacts retain the repository hierarchy.
