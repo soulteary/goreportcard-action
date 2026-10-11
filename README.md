@@ -1,6 +1,8 @@
 # Go Report Card
 
-[![Go Report Card](./.github/goreportcard.svg)](./.github/goreportcard-report.md)
+[![Go Test Coverage](./.github/coverage.svg)](./.github/go-test-report.md) [![Go Report Card](./.github/goreportcard.svg)](./.github/goreportcard-report.md)
+
+
 [![GitHub Marketplace](https://img.shields.io/badge/Marketplace-Go%20Report%20Card%20Badge-2ea44f?logo=github)](https://github.com/marketplace/actions/go-report-card-badge)
 [![Release](https://img.shields.io/github/v/release/soulteary/goreportcard-action?sort=semver)](https://github.com/soulteary/goreportcard-action/releases)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSE)
