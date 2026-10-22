@@ -10,6 +10,10 @@ inputs:
     description: "Root directory of the Go project to grade."
     required: false
     default: "."
+  go_version_file:
+    description: "Go version file for the project, relative to directory."
+    required: false
+    default: "go.mod"
   output:
     description: "Path (relative to the repository) where the SVG badge will be written."
     required: false
@@ -68,7 +72,7 @@ runs:
       uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
       with:
         go-version-file: ${{ github.action_path }}/go.mod
-        cache-dependency-path: ${{ github.action_path }}/go.sum
+        cache: false
 
     - name: Install goreportcard-cli and its linters
       shell: bash
@@ -81,6 +85,14 @@ runs:
         INPUT_VERSION: ${{ inputs.version }}
         GOREPORTCARD_REPO: ${{ github.action_repository }}
         GH_TOKEN: ${{ github.token }}
+
+    # Installation uses this action's Go; grading and later workflow steps must
+    # use the consumer module's requested toolchain.
+    - name: Set up project Go
+      uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+      with:
+        go-version-file: ${{ inputs.directory }}/${{ inputs.go_version_file }}
+        cache: false
 
     - name: Generate report card badge
       id: grade
