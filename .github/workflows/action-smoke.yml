@@ -38,3 +38,26 @@ jobs:
             echo "Badge: ${{ steps.grc.outputs.badge }}"
             echo "Report: ${{ steps.grc.outputs.report }}"
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Stage a project with a different Go toolchain
+        shell: bash
+        run: |
+          mkdir -p _toolchain-fixture
+          printf 'module example.com/toolchain-fixture\n\ngo 1.27.2\n' > _toolchain-fixture/go.mod
+          printf 'package fixture\n\nfunc Value() int { return 1 }\n' > _toolchain-fixture/fixture.go
+
+      - name: Grade the consumer module
+        uses: ./
+        with:
+          directory: _toolchain-fixture
+          output: _toolchain-fixture/quality.svg
+          report_output: _toolchain-fixture/quality.md
+          commit: "false"
+          version: "source"
+
+      - name: Verify consumer Go remains selected
+        shell: bash
+        run: |
+          test "$(go env GOVERSION)" = go1.27.2
+          cd _toolchain-fixture
+          go list ./...
