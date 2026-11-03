@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 	"syscall"
@@ -149,20 +150,18 @@ type FileSummary struct {
 }
 
 // AddError adds an Error to FileSummary
-func (fs *FileSummary) AddError(out string) error {
-	s := strings.SplitN(out, ":", 2)
-	msg := strings.SplitAfterN(s[1], ":", 3)[2]
+var toolDiagnostic = regexp.MustCompile(`^(.*):([0-9]+):([0-9]+):(.*)$`)
 
-	e := Error{ErrorString: msg}
-	ls := strings.Split(s[1], ":")
-	ln, err := strconv.Atoi(ls[0])
+func (fs *FileSummary) AddError(out string) error {
+	parts := toolDiagnostic.FindStringSubmatch(out)
+	if parts == nil {
+		return fmt.Errorf("AddError: could not parse %q", out)
+	}
+	line, err := strconv.Atoi(parts[2])
 	if err != nil {
 		return fmt.Errorf("AddError: could not parse %q - %v", out, err)
 	}
-	e.LineNumber = ln
-
-	fs.Errors = append(fs.Errors, e)
-
+	fs.Errors = append(fs.Errors, Error{LineNumber: line, ErrorString: parts[4]})
 	return nil
 }
 
@@ -332,21 +331,22 @@ func normalizeToolLine(line, enabledCheck string) (normalized, filename string, 
 			return "", "", false
 		}
 		loc := fields[len(fields)-1] // file.go:line:col
-		fn := strings.Split(loc, ":")[0]
 		msg := fmt.Sprintf("cyclomatic complexity %s for function %s", fields[0], fields[2])
-		return loc + ": " + msg, fn, true
+		normalized := loc + ": " + msg
+		parts := toolDiagnostic.FindStringSubmatch(normalized)
+		if parts == nil {
+			return "", "", false
+		}
+		return normalized, parts[1], true
 
 	default:
 		// Already "file:line:col: message". Ignore any tool diagnostics that
 		// do not follow that shape (e.g. build errors on stderr).
-		parts := strings.SplitN(line, ":", 4)
-		if len(parts) < 4 {
+		parts := toolDiagnostic.FindStringSubmatch(line)
+		if parts == nil {
 			return "", "", false
 		}
-		if _, err := strconv.Atoi(strings.TrimSpace(parts[1])); err != nil {
-			return "", "", false
-		}
-		return line, parts[0], true
+		return line, parts[1], true
 	}
 }
 

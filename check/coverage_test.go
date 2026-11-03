@@ -140,11 +140,11 @@ func TestOutputNormalizationAndFiltering(t *testing.T) {
 			t.Fatal(s)
 		}
 	}
-	if _, err = getFileSummaryMap(bufio.NewScanner(strings.NewReader("10 pkg Func a.go:bad:1")), "", "gocyclo"); err == nil {
+	if _, err = getFileSummaryMap(bufio.NewScanner(strings.NewReader("10 pkg Func a.go:999999999999999999999999:1")), "", "gocyclo"); err == nil {
 		t.Fatal("malformed position accepted")
 	}
 	var summary FileSummary
-	if summary.AddError("a.go:bad:1: message") == nil {
+	if summary.AddError("a.go:999999999999999999999999:1: message") == nil {
 		t.Fatal("bad line accepted")
 	}
 	if got := buildToolParams("root", "staticcheck", []string{"staticcheck"}); len(got) != 1 || got[0] != "./..." {
@@ -180,7 +180,7 @@ func TestNativeProcessOutcomes(t *testing.T) {
 	if _, err = runTool(root, "vet", []string{exe}, nil); err == nil {
 		t.Fatal("oversized output accepted")
 	}
-	t.Setenv("GRC_OUTPUT", "10 pkg F a.go:bad:1\n")
+	t.Setenv("GRC_OUTPUT", "10 pkg F a.go:999999999999999999999999:1\n")
 	if _, err = runTool(root, "gocyclo", []string{exe}, nil); err == nil {
 		t.Fatal("malformed output accepted")
 	}
@@ -285,11 +285,37 @@ func TestNestedRepositoryURLs(t *testing.T) {
 func TestMalformedToolResponseReleasesWorkingDirectory(t *testing.T) {
 	exe := helperTools(t)
 	root := t.TempDir()
-	t.Setenv("GRC_OUTPUT", "10 pkg Func a.go:bad:1\n")
+	t.Setenv("GRC_OUTPUT", "10 pkg Func a.go:999999999999999999999999:1\n")
 	if _, err := runTool(root, "gocyclo", []string{exe}, nil); err == nil {
 		t.Fatal("malformed response accepted")
 	}
 	if err := os.RemoveAll(root); err != nil {
 		t.Fatalf("child still holds working directory: %v", err)
+	}
+}
+
+func TestDiagnosticParsingIsRobust(t *testing.T) {
+	for _, line := range []string{"noise", "a.go", "a.go:1", "a.go:1:2", "a.go:bad:2: message"} {
+		var summary FileSummary
+		if err := summary.AddError(line); err == nil {
+			t.Fatalf("accepted malformed diagnostic %q", line)
+		}
+	}
+	for _, tool := range []string{"vet", "gocyclo"} {
+		line := `C:\src\project\a.go:12:3: message: detail`
+		if tool == "gocyclo" {
+			line = `12 pkg Func C:\src\project\a.go:12:3`
+		}
+		normalized, file, ok := normalizeToolLine(line, tool)
+		if !ok || file != "C:/src/project/a.go" {
+			t.Fatalf("%s: %s %s %v", tool, normalized, file, ok)
+		}
+		var summary FileSummary
+		if err := summary.AddError(normalized); err != nil || len(summary.Errors) != 1 || summary.Errors[0].LineNumber != 12 {
+			t.Fatalf("%+v %v", summary, err)
+		}
+	}
+	if _, _, ok := normalizeToolLine("warning from child process.", "gocyclo"); ok {
+		t.Fatal("tool warning treated as finding")
 	}
 }

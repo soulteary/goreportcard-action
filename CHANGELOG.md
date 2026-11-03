@@ -10,10 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.6] - 2026-11-03
 
 ### Changed
-- Raise total Go statement coverage to 98.95% with deterministic unit tests for success, failure and boundary cases.
+- Raise total Go statement coverage to 98.94% with deterministic unit tests for success, failure and boundary cases.
 - Enforce a 95% coverage floor across all production Go packages in CI, retaining real-analyzer integration checks.
 - Preserve nested file paths in GitHub and golang.org source links.
 - Require actual license files instead of accepting directories or Go source files.
+- Parse Windows drive-letter diagnostics and reject malformed tool output without panicking.
 - Reap analyzer subprocesses on malformed or oversized output so Windows working directories are released.
 - Make CLI flag parsing independently testable without global flag state.
 
