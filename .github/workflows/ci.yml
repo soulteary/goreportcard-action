@@ -63,9 +63,7 @@ jobs:
 
       - name: Test with coverage
         shell: bash
-        run: |
-          go test -covermode=atomic -coverprofile=coverage.out ./check/... ./cmd/...
-          GOTOOLCHAIN=auto go tool cover -func=coverage.out | tail -n1
+        run: scripts/test-coverage.sh
 
         if: "!(github.event_name == 'pull_request' && runner.os == 'Linux')"
       - name: Remove stale generated report evidence
@@ -83,8 +81,8 @@ jobs:
           directory: "."
           packages: "./check/... ./cmd/..."
           race: "true"
-          coverage_threshold: "70"
-          test_args: "-count=1"
+          coverage_threshold: "95"
+          test_args: "-count=1 -coverpkg=./..."
           version: "v1.1.2"
           cover_mode: "atomic"
           commit: "false"
@@ -106,13 +104,18 @@ jobs:
           PROFILE: ${{ steps.go_test_report.outputs.coverage_profile }}
         run: |-
           cp "$PROFILE" coverage.out
-      - name: Enforce project coverage >= 70%
+      - name: Enforce project coverage >= 95%
         if: runner.os == 'Linux'
         shell: bash
         run: |
-          total="$(GOTOOLCHAIN=auto go tool cover -func=coverage.out | awk '/^total:/ {gsub(/%/,"",$3); print $3}')"
-          echo "total coverage: ${total}%"
-          awk -v t="$total" 'BEGIN { if (t+0 < 70.0) { printf("::error::project coverage %.2f%% < 70%%\n", t); exit 1 } }'
+          awk 'NR > 1 { key=$1; statements[key]=$2; if ($3 > 0) covered[key]=1 }
+          END {
+            for (key in statements) { total+=statements[key]; if (covered[key]) hit+=statements[key] }
+            if (total == 0) exit 1
+            coverage=100*hit/total
+            printf "Total statement coverage: %.2f%% (minimum 95%%)\n", coverage
+            if (coverage < 95) exit 1
+          }' coverage.out
 
       - name: Publish reusable PR coverage
         if: github.event_name == 'pull_request' && runner.os == 'Linux'

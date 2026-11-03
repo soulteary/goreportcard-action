@@ -223,3 +223,12 @@ The code is licensed under the permissive Apache v2.0 license. [Read this](https
 ### Project toolchain
 
 The action installs its own build tools separately, then selects the Go version declared by the target project before running checks. Later workflow steps keep that project toolchain. Nested setup steps disable caching to avoid overlapping restores; callers can configure their own setup-go cache.
+
+## Unit-test coverage
+
+Run `scripts/test-coverage.sh` to execute the Go unit tests with the race detector
+and coverage instrumentation across all production Go packages, including the
+CLI. CI requires at least **95% total statement coverage**. The gate uses exact
+statement counts from `coverage.out`, not a rounded percentage, and does not
+exclude production files. Analyzer protocol tests use deterministic local
+processes; real-analyzer integration tests remain part of CI.

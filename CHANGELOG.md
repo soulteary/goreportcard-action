@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.6] - 2026-11-03
+
+### Changed
+- Raise total Go statement coverage to 98.93% with deterministic unit tests for success, failure and boundary cases.
+- Enforce a 95% coverage floor across all production Go packages in CI, retaining real-analyzer integration checks.
+- Preserve nested file paths in GitHub and golang.org source links.
+- Require actual license files instead of accepting directories or Go source files.
+- Make CLI flag parsing independently testable without global flag state.
+
 ## [1.1.5] - 2026-11-03
 
 ### Fixed

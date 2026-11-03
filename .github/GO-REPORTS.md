@@ -15,7 +15,7 @@ branches can reject writeback; no PAT, bypass, or force-push is used.
 
 Test directory: `.`. Packages: `./check/... ./cmd/...`.
 Race detector: `true`. Additional args: `-count=1`.
-Coverage floor: `70%` (zero records a baseline).
+Coverage floor: `95%` (zero records a baseline).
 Per-package floor: `0%`.
 Quality-score floor: `0%`.
 Raw profiles/test logs are artifacts, never committed.
