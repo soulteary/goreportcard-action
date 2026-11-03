@@ -1,11 +1,11 @@
 # Go Report Card
 
-**Grade: A+** (100.0%)
+**Grade: A+** (99.3%)
 
 | Metric | Value |
 | ------ | ----- |
-| Files | 16 |
-| Issues | 0 |
+| Files | 18 |
+| Issues | 1 |
 
 ## Checks
 
@@ -13,12 +13,17 @@
 | ----- | ----- |
 | gofmt | 100% |
 | go_vet | 100% |
-| gocyclo | 100% |
+| gocyclo | 94% |
 | ineffassign | 100% |
 | license | 100% |
 | misspell | 100% |
 
-No issues found. Nice work!
+## Issues
+
+### gocyclo
+
+- `check/coverage_test.go`
+  - Line 154: cyclomatic complexity 20 for function TestNativeProcessOutcomes
 
 ---
 
