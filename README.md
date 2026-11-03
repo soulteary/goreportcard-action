@@ -232,3 +232,7 @@ CLI. CI requires at least **95% total statement coverage**. The gate uses exact
 statement counts from `coverage.out`, not a rounded percentage, and does not
 exclude production files. Analyzer protocol tests use deterministic local
 processes; real-analyzer integration tests remain part of CI.
+
+The repository's own Go Report Card badge is refreshed on default-branch CI,
+release and manual runs. Pull requests also run the pinned Go Report Card Action
+and retain the report as an artifact.
