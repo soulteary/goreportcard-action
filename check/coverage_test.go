@@ -319,3 +319,18 @@ func TestDiagnosticParsingIsRobust(t *testing.T) {
 		t.Fatal("tool warning treated as finding")
 	}
 }
+
+func TestDiagnosticMessageDoesNotReplaceLocation(t *testing.T) {
+	line := `C:/src/a.go:12:3: refers to b.go:8:9: explanation`
+	normalized, file, ok := normalizeToolLine(line, "vet")
+	if !ok || file != "C:/src/a.go" {
+		t.Fatalf("wrong filename: %s", file)
+	}
+	var summary FileSummary
+	if err := summary.AddError(normalized); err != nil {
+		t.Fatal(err)
+	}
+	if summary.Errors[0].LineNumber != 12 || !strings.Contains(summary.Errors[0].ErrorString, "b.go:8:9:") {
+		t.Fatalf("wrong diagnostic: %+v", summary)
+	}
+}

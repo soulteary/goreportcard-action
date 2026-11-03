@@ -150,7 +150,7 @@ type FileSummary struct {
 }
 
 // AddError adds an Error to FileSummary
-var toolDiagnostic = regexp.MustCompile(`^(.*):([0-9]+):([0-9]+):(.*)$`)
+var toolDiagnostic = regexp.MustCompile(`^(.*?):([0-9]+):([0-9]+):(.*)$`)
 
 func (fs *FileSummary) AddError(out string) error {
 	parts := toolDiagnostic.FindStringSubmatch(out)
