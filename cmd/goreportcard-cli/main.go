@@ -89,15 +89,24 @@ func run(opts options, w io.Writer) int {
 	return 0
 }
 
-func main() {
+// execute parses flags without changing the process-global flag set.
+func execute(args []string, stdout, stderr io.Writer) int {
+	fs := flag.NewFlagSet("goreportcard-cli", flag.ContinueOnError)
+	fs.SetOutput(stderr)
 	var opts options
-	flag.StringVar(&opts.dir, "d", ".", "Root directory of your Go application")
-	flag.BoolVar(&opts.verbose, "v", false, "Verbose output")
-	flag.Float64Var(&opts.th, "t", 0, "Threshold of failure command")
-	flag.BoolVar(&opts.jsn, "j", false, "JSON output. The binary will always exit with code 0")
-	flag.StringVar(&opts.svg, "svg", "", "Write a self-contained report card badge SVG to the given file path")
-	flag.StringVar(&opts.report, "report", "", "Write a Markdown quality report to the given file path")
-	flag.Parse()
-
-	os.Exit(run(opts, os.Stdout))
+	fs.StringVar(&opts.dir, "d", ".", "Root directory of your Go application")
+	fs.BoolVar(&opts.verbose, "v", false, "Verbose output")
+	fs.Float64Var(&opts.th, "t", 0, "Threshold of failure command")
+	fs.BoolVar(&opts.jsn, "j", false, "JSON output. The binary will always exit with code 0")
+	fs.StringVar(&opts.svg, "svg", "", "Write a self-contained report card badge SVG to the given file path")
+	fs.StringVar(&opts.report, "report", "", "Write a Markdown quality report to the given file path")
+	if err := fs.Parse(args); err != nil {
+		if err == flag.ErrHelp {
+			return 0
+		}
+		return 2
+	}
+	return run(opts, stdout)
 }
+
+func main() { os.Exit(execute(os.Args[1:], os.Stdout, os.Stderr)) }

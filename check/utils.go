@@ -245,9 +245,10 @@ func fileURL(filename string) string {
 			pkg = strings.Split(base, "/")[2]
 		}
 
-		return fmt.Sprintf("https://github.com/golang/%s/blob/master%s", pkg, strings.TrimPrefix(filename, "/"+base))
+		repoRoot := strings.Join(strings.Split(base, "/")[:3], "/")
+		return fmt.Sprintf("https://github.com/golang/%s/blob/master%s", pkg, strings.TrimPrefix(filename, "/"+repoRoot))
 	case strings.HasPrefix(base, "github.com/"):
-		if len(strings.Split(base, "/")) == 4 {
+		if len(strings.Split(base, "/")) >= 4 {
 			base = strings.Join(strings.Split(base, "/")[0:3], "/")
 		}
 

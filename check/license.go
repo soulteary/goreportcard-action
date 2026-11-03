@@ -42,7 +42,7 @@ func (g License) Percentage() (float64, []FileSummary, error) {
 	for _, file := range files {
 		name := strings.ToLower(file.Name())
 
-		if filepath.Ext(name) == "go" {
+		if file.IsDir() || filepath.Ext(name) == ".go" {
 			continue
 		}
 
