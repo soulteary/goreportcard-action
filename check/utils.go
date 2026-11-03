@@ -455,6 +455,15 @@ func runTool(dir, enabledCheck string, command, params []string) ([]FileSummary,
 	if err := cmd.Start(); err != nil {
 		return []FileSummary{}, err
 	}
+	// Parsing can return before Wait. Always release the child and pipe;
+	// otherwise a malformed response leaves the process holding its directory.
+	defer func() {
+		_ = stdout.Close()
+		if cmd.ProcessState == nil {
+			_ = cmd.Process.Kill()
+			_ = cmd.Wait()
+		}
+	}()
 
 	out := bufio.NewScanner(stdout)
 

@@ -281,3 +281,15 @@ func TestNestedRepositoryURLs(t *testing.T) {
 		}
 	}
 }
+
+func TestMalformedToolResponseReleasesWorkingDirectory(t *testing.T) {
+	exe := helperTools(t)
+	root := t.TempDir()
+	t.Setenv("GRC_OUTPUT", "10 pkg Func a.go:bad:1\n")
+	if _, err := runTool(root, "gocyclo", []string{exe}, nil); err == nil {
+		t.Fatal("malformed response accepted")
+	}
+	if err := os.RemoveAll(root); err != nil {
+		t.Fatalf("child still holds working directory: %v", err)
+	}
+}
