@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.5] - 2026-11-03
+
+### Fixed
+- Capitalize report badge labels and refresh the README badge example.
+
 ### Added
 - The release workflow can now publish from a manual run (`workflow_dispatch`
   with `publish: true`). Previously the publish step was gated on
