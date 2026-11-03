@@ -50,7 +50,7 @@ func textWidth(s string) int {
 // given grade. It does not depend on any external service, so it is suitable
 // for committing directly into a repository.
 func GenerateBadgeSVG(grade Grade) string {
-	label := "go report"
+	label := "Go Report"
 	message := string(grade)
 	color := GradeColor(grade)
 

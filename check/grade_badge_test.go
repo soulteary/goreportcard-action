@@ -81,7 +81,7 @@ func TestGenerateBadgeSVG(t *testing.T) {
 
 	for _, want := range []string{
 		"<svg xmlns=\"http://www.w3.org/2000/svg\"",
-		"go report",
+		"Go Report",
 		"A+",
 		"#44cc11", // A+ color
 		"</svg>",
