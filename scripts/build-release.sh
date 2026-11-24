@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 #
 # Cross-compiles the goreportcard-cli together with the linter binaries it
-# invokes at runtime (gometalinter, gocyclo, ineffassign, misspell) and packages
+# invokes at runtime (gocyclo, ineffassign, misspell) and packages
 # them into per-platform archives suitable for a GitHub Release.
 #
-# Each archive contains all five binaries in its root, so the action can simply
+# Each archive contains all four binaries in its root, so the action can simply
 # download one archive, unpack it, and put its contents on PATH.
 #
 # Usage:
@@ -28,7 +28,6 @@ PLATFORMS="${PLATFORMS:-linux/amd64 linux/arm64 darwin/amd64 darwin/arm64 window
 build_targets() {
   cat <<'EOF'
 goreportcard-cli ./cmd/goreportcard-cli
-gometalinter github.com/alecthomas/gometalinter
 gocyclo github.com/fzipp/gocyclo/cmd/gocyclo
 ineffassign github.com/gordonklaus/ineffassign
 misspell github.com/client9/misspell/cmd/misspell
